@@ -1,57 +1,22 @@
 // src/App.tsx
-import { useState, useEffect } from 'react';
-import CognitiveBuddyAvatar, { AvatarEmotionalState } from './components/CognitiveBuddyAvatar/CognitiveBuddyAvatar';
-import './App.css'; // Assuming App.css has some basic styles, or you can remove/modify
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from 'styled-components';
+import theme from './styles/theme';
+import GlobalStyles from './styles/GlobalStyles';
+import Home from './pages/Home/Home';
 
 function App() {
-  const [currentEmotion, setCurrentEmotion] = useState<AvatarEmotionalState>('idle');
-  const [emotionIndex, setEmotionIndex] = useState(0);
-
-  // Define a few emotions to cycle through for testing
-  const testEmotions: AvatarEmotionalState[] = [
-    'idle',
-    'happy',
-    'curious',
-    'competitive',
-    'focusedProblemSolving',
-    'elated'
-  ];
-
-  useEffect(() => {
-    // Cycle through emotions every 3 seconds for demonstration
-    const timer = setInterval(() => {
-      setEmotionIndex(prevIndex => (prevIndex + 1) % testEmotions.length);
-    }, 3000);
-
-    return () => clearInterval(timer); // Cleanup interval on component unmount
-  }, [testEmotions.length]);
-
-  useEffect(() => {
-    setCurrentEmotion(testEmotions[emotionIndex]);
-  }, [emotionIndex, testEmotions]);
-
-  // A simple button to manually change state for quicker testing
-  const handleNextEmotion = () => {
-    setEmotionIndex(prevIndex => (prevIndex + 1) % testEmotions.length);
-  };
-
   return (
-    <>
-      {/* You can keep or remove the default Vite content */}
-      <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <h1>SoulCore Legacy</h1>
-        <p>Cognitive Buddy Avatar Demo</p>
-
-        <CognitiveBuddyAvatar emotionalState={currentEmotion} />
-
-        <div style={{ marginTop: '20px' }}>
-          <p>Current State: <strong>{currentEmotion}</strong></p>
-          <button onClick={handleNextEmotion} style={{ padding: '10px 20px', fontSize: '1rem' }}>
-            Next Emotion
-          </button>
-        </div>
-      </div>
-    </>
+    <ThemeProvider theme={theme}>
+      <GlobalStyles />
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          {/* Add more routes as we develop them */}
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 
