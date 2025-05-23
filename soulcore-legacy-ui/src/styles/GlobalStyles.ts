@@ -36,6 +36,7 @@ const GlobalStyles = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     transition: background-color ${theme.animation.duration.normal} ${theme.animation.easing.standard};
+    cursor: none; /* Hide default cursor when using custom cursor */
   }
 
   #root {
@@ -82,6 +83,7 @@ const GlobalStyles = createGlobalStyle`
     text-decoration: none;
     transition: color ${theme.animation.duration.fast} ${theme.animation.easing.standard};
     position: relative;
+    cursor: none; /* Use custom cursor */
     
     &:hover {
       color: ${theme.colors.primary.light};
@@ -105,12 +107,35 @@ const GlobalStyles = createGlobalStyle`
 
   button {
     font-family: ${theme.typography.fontFamily.primary};
-    cursor: pointer;
+    cursor: none; /* Use custom cursor */
     border: none;
     background: none;
     
     &:focus {
       outline: none;
+    }
+  }
+
+  /* Form elements */
+  input, textarea, select {
+    font-family: ${theme.typography.fontFamily.primary};
+    font-size: ${theme.typography.fontSize.md};
+    background: rgba(51, 65, 85, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: ${theme.borderRadius.md};
+    color: ${theme.colors.text.primary};
+    padding: ${theme.spacing.sm} ${theme.spacing.md};
+    transition: all 0.3s ease;
+    cursor: none; /* Use custom cursor */
+    
+    &:focus {
+      outline: none;
+      border-color: ${theme.colors.primary.main};
+      box-shadow: 0 0 0 2px ${theme.colors.primary.main}40;
+    }
+    
+    &::placeholder {
+      color: ${theme.colors.text.hint};
     }
   }
 
@@ -162,6 +187,51 @@ const GlobalStyles = createGlobalStyle`
 
   ::-webkit-scrollbar-thumb:hover {
     background: ${theme.colors.primary.dark};
+  }
+  
+  /* Selection styling */
+  ::selection {
+    background-color: ${theme.colors.primary.main}40;
+    color: ${theme.colors.text.primary};
+  }
+  
+  /* Custom cursor styles */
+  .custom-cursor {
+    pointer-events: none;
+    mix-blend-mode: difference;
+    z-index: 9999;
+  }
+  
+  .custom-cursor-dot {
+    pointer-events: none;
+    z-index: 10000;
+    mix-blend-mode: difference;
+  }
+  
+  /* Hide cursor on touch devices */
+  @media (hover: none) and (pointer: coarse) {
+    .custom-cursor, .custom-cursor-dot {
+      display: none;
+    }
+    
+    body, a, button, input, textarea, select {
+      cursor: auto;
+    }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: ${theme.breakpoints.md}) {
+    h1 {
+      font-size: ${theme.typography.fontSize.h2};
+    }
+    
+    h2 {
+      font-size: ${theme.typography.fontSize.h3};
+    }
+    
+    h3 {
+      font-size: ${theme.typography.fontSize.h4};
+    }
   }
 `;
 
