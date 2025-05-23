@@ -1,117 +1,108 @@
 // src/App.tsx
-import { useState, useEffect } from 'react';
-import CognitiveBuddyAvatar from './components/CognitiveBuddyAvatar/CognitiveBuddyAvatar';
-import type { AvatarEmotionalState } from './components/CognitiveBuddyAvatar/CognitiveBuddyAvatar';
-import ParallaxBackground from './components/effects/ParallaxBackground';
-import './App.css';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { ThemeProvider } from 'styled-components';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import theme from './styles/theme';
+import GlobalStyles from './styles/GlobalStyles';
+import AppRoutes from './routes/AppRoutes';
+
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger);
 
 function App() {
-  const [currentEmotion, setCurrentEmotion] = useState<AvatarEmotionalState>('idle');
-  const [emotionIndex, setEmotionIndex] = useState(0);
-
-  // Define a few emotions to cycle through for testing
-  const testEmotions: AvatarEmotionalState[] = [
-    'idle',
-    'happy',
-    'curious',
-    'competitive',
-    'focusedProblemSolving',
-    'elated'
-  ];
-
+  // Initialize any global effects or listeners
   useEffect(() => {
-    // Cycle through emotions every 3 seconds for demonstration
-    const timer = setInterval(() => {
-      setEmotionIndex(prevIndex => (prevIndex + 1) % testEmotions.length);
-    }, 3000);
-
-    return () => clearInterval(timer); // Cleanup interval on component unmount
-  }, [testEmotions.length]);
-
-  useEffect(() => {
-    setCurrentEmotion(testEmotions[emotionIndex]);
-  }, [emotionIndex, testEmotions]);
-
-  // A simple button to manually change state for quicker testing
-  const handleNextEmotion = () => {
-    setEmotionIndex(prevIndex => (prevIndex + 1) % testEmotions.length);
-  };
-
-  return (
-    <>
-      {/* Enhanced Background Effect */}
-      <ParallaxBackground intensity={1} />
+    // Add cursor effect
+    const cursor = document.createElement('div');
+    cursor.className = 'custom-cursor';
+    cursor.style.position = 'fixed';
+    cursor.style.width = '20px';
+    cursor.style.height = '20px';
+    cursor.style.borderRadius = '50%';
+    cursor.style.backgroundColor = 'transparent';
+    cursor.style.border = `2px solid ${theme.colors.primary.main}`;
+    cursor.style.pointerEvents = 'none';
+    cursor.style.zIndex = '9999';
+    cursor.style.transform = 'translate(-50%, -50%)';
+    cursor.style.transition = 'width 0.2s, height 0.2s, background-color 0.2s, transform 0.1s';
+    document.body.appendChild(cursor);
+    
+    // Add cursor dot
+    const cursorDot = document.createElement('div');
+    cursorDot.className = 'custom-cursor-dot';
+    cursorDot.style.position = 'fixed';
+    cursorDot.style.width = '5px';
+    cursorDot.style.height = '5px';
+    cursorDot.style.borderRadius = '50%';
+    cursorDot.style.backgroundColor = theme.colors.primary.main;
+    cursorDot.style.pointerEvents = 'none';
+    cursorDot.style.zIndex = '10000';
+    cursorDot.style.transform = 'translate(-50%, -50%)';
+    document.body.appendChild(cursorDot);
+    
+    // Update cursor position
+    const updateCursor = (e: MouseEvent) => {
+      gsap.to(cursor, {
+        x: e.clientX,
+        y: e.clientY,
+        duration: 0.15,
+        ease: 'power2.out'
+      });
       
-      {/* Main Content */}
-      <div style={{ 
-        textAlign: 'center', 
-        marginTop: '50px',
-        position: 'relative',
-        zIndex: 1
-      }}>
-        <h1 style={{
-          background: 'linear-gradient(90deg, #6E44FF, #4A90E2, #50E3C2)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          fontSize: '3rem',
-          marginBottom: '1rem'
-        }}>
-          SoulCore Legacy
-        </h1>
-        
-        <p style={{
-          color: '#FFFFFF',
-          fontSize: '1.2rem',
-          textShadow: '0 0 10px rgba(110, 68, 255, 0.5)'
-        }}>
-          Cognitive Buddy Avatar Demo
-        </p>
-
-        <div style={{
-          background: 'rgba(26, 28, 36, 0.7)',
-          backdropFilter: 'blur(10px)',
-          borderRadius: '12px',
-          border: '1px solid rgba(110, 68, 255, 0.2)',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-          padding: '2rem',
-          maxWidth: '600px',
-          margin: '2rem auto'
-        }}>
-          <CognitiveBuddyAvatar emotionalState={currentEmotion} />
-
-          <div style={{ marginTop: '20px' }}>
-            <p style={{ color: '#B8B8B8' }}>
-              Current State: <strong style={{ color: '#FFFFFF' }}>{currentEmotion}</strong>
-            </p>
-            <button 
-              onClick={handleNextEmotion} 
-              style={{ 
-                padding: '10px 20px', 
-                fontSize: '1rem',
-                background: 'linear-gradient(90deg, #6E44FF, #4A90E2)',
-                border: 'none',
-                borderRadius: '8px',
-                color: 'white',
-                cursor: 'pointer',
-                boxShadow: '0 0 15px rgba(110, 68, 255, 0.5)',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.transform = 'scale(1.05)';
-                e.currentTarget.style.boxShadow = '0 0 20px rgba(110, 68, 255, 0.7)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.transform = 'scale(1)';
-                e.currentTarget.style.boxShadow = '0 0 15px rgba(110, 68, 255, 0.5)';
-              }}
-            >
-              Next Emotion
-            </button>
-          </div>
-        </div>
-      </div>
-    </>
+      gsap.to(cursorDot, {
+        x: e.clientX,
+        y: e.clientY,
+        duration: 0.1,
+        ease: 'power2.out'
+      });
+    };
+    
+    // Handle cursor over interactive elements
+    const handleMouseEnter = () => {
+      cursor.style.width = '40px';
+      cursor.style.height = '40px';
+      cursor.style.backgroundColor = `${theme.colors.primary.main}20`;
+      cursor.style.mixBlendMode = 'difference';
+    };
+    
+    const handleMouseLeave = () => {
+      cursor.style.width = '20px';
+      cursor.style.height = '20px';
+      cursor.style.backgroundColor = 'transparent';
+      cursor.style.mixBlendMode = 'normal';
+    };
+    
+    // Add event listeners
+    document.addEventListener('mousemove', updateCursor);
+    
+    // Add event listeners to interactive elements
+    const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, select, textarea');
+    interactiveElements.forEach(el => {
+      el.addEventListener('mouseenter', handleMouseEnter);
+      el.addEventListener('mouseleave', handleMouseLeave);
+    });
+    
+    // Cleanup
+    return () => {
+      document.removeEventListener('mousemove', updateCursor);
+      interactiveElements.forEach(el => {
+        el.removeEventListener('mouseenter', handleMouseEnter);
+        el.removeEventListener('mouseleave', handleMouseLeave);
+      });
+      document.body.removeChild(cursor);
+      document.body.removeChild(cursorDot);
+    };
+  }, []);
+  
+  return (
+    <ThemeProvider theme={theme}>
+      <GlobalStyles />
+      <Router>
+        <AppRoutes />
+      </Router>
+    </ThemeProvider>
   );
 }
 
